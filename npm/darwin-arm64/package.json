@@ -1,0 +1,18 @@
+{
+  "name": "webview-rs-darwin-arm64",
+  "version": "0.0.0",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "webview-rs.darwin-arm64.node",
+  "files": [
+    "webview-rs.darwin-arm64.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  }
+}
