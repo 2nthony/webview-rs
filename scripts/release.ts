@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 
-const newversion = process.argv.slice(2);
+const [newversion] = process.argv.slice(2);
 if (!newversion) {
   console.log("Invalid newversion");
   process.exit();
