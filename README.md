@@ -1,5 +1,7 @@
 # webview-rs
 
+⚡️ Currently is still in development.
+
 Rust webview for Node.js.
 
 ## Install
