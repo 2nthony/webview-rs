@@ -27,10 +27,10 @@ jobs:
             target: x86_64-apple-darwin
             architecture: x64
             build: |
-              pnpm run build
+              yarn build
               strip -x *.node
           - host: windows-latest
-            build: pnpm run build
+            build: yarn build
             target: x86_64-pc-windows-msvc
             architecture: x64
           - host: ubuntu-latest
@@ -40,11 +40,11 @@ jobs:
               docker pull $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian
               docker tag $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian builder
             build: |
-              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd):/build -w /build builder pnpm run build && strip *.node
+              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd):/build -w /build builder yarn build && strip *.node
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
-              pnpm run build -- --target=aarch64-apple-darwin
+              yarn build --target=aarch64-apple-darwin
               strip -x *.node
     name: stable - ${{ matrix.settings.target }} - node@16
     runs-on: ${{ matrix.settings.host }}
@@ -55,7 +55,7 @@ jobs:
         with:
           node-version: 16
           check-latest: true
-          cache: pnpm
+          cache: yarn
           architecture: ${{ matrix.settings.architecture }}
       - name: Install
         uses: actions-rs/toolchain@v1
@@ -82,7 +82,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: npm-cache-${{ matrix.settings.target }}-node@16-${{ hashFiles('pnpm-lock.yaml') }}
+          key: npm-cache-${{ matrix.settings.target }}-node@16-${{ hashFiles('yarn.lock') }}
       - name: Pull latest image
         run: ${{ matrix.settings.docker }}
         env:
@@ -93,7 +93,7 @@ jobs:
         if: ${{ matrix.settings.setup }}
         shell: bash
       - name: Install dependencies
-        run: pnpm install
+        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
       - name: Build
         run: ${{ matrix.settings.build }}
         shell: bash
@@ -125,14 +125,14 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           check-latest: true
-          cache: pnpm
+          cache: yarn
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: npm-cache-test-${{ matrix.settings.target }}-${{ matrix.node }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: npm-cache-test-${{ matrix.settings.target }}-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
-        run: pnpm install
+        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
@@ -142,7 +142,7 @@ jobs:
         run: ls -R .
         shell: bash
       - name: Test bindings
-        run: pnpm run test
+        run: yarn test
   test-linux-x64-gnu-binding:
     name: Test bindings on Linux-x64-gnu - node@${{ matrix.node }}
     needs:
@@ -162,14 +162,14 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           check-latest: true
-          cache: pnpm
+          cache: yarn
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
-        run: pnpm install
+        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
@@ -179,7 +179,7 @@ jobs:
         run: ls -R .
         shell: bash
       - name: Test bindings
-        run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-slim pnpm run test
+        run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-slim yarn test
   publish:
     name: Publish
     runs-on: ubuntu-latest
@@ -193,16 +193,22 @@ jobs:
         with:
           node-version: 16
           check-latest: true
-          cache: pnpm
+          cache: yarn
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: npm-cache-ubuntu-latest-${{ hashFiles('pnpm-lock.yaml') }}
+          key: npm-cache-ubuntu-latest-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             npm-cache-
       - name: Install dependencies
-        run: pnpm install
+        run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+      - name: Move artifacts
+        run: yarn artifacts
       - name: List packages
         run: ls -R ./npm
         shell: bash
