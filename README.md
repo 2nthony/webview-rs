@@ -51,6 +51,10 @@ createWindow({
   <img src="https://cdn.jsdelivr.net/gh/2nthony/statics@main/uPic/202dj0IlqXf4.png">
 </p>
 
+## TODOs
+
+- [ ] Support parsing a URL to present content(PR welcome)
+
 ## Tests
 
 - [x] macOS 12.1 with intel i5
