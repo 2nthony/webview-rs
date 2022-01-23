@@ -12,8 +12,6 @@ if (oldVersion === version) {
   process.exit();
 }
 
-execSync("npm run build:types", { stdio: "inherit" });
-execSync("npm run update", { stdio: "inherit" });
 execSync("git add .", { stdio: "inherit" });
 
 execSync(`git commit -m "chore: release v${version}"`, { stdio: "inherit" });
