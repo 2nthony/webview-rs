@@ -16,6 +16,7 @@ struct WebviewOptions {
 
 #[napi]
 fn create_window(options: WebviewOptions) -> Result<()> {
+  // TODO: each option should has default value
   let title = options.title.unwrap_or_default();
   let debug = options.debug.unwrap_or_default();
   let content = options.content.unwrap_or_default();
