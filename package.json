@@ -1,7 +1,7 @@
 {
   "name": "webview-rs",
   "description": "Rust webview for Node.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
