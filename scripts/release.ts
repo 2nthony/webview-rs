@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 const [newversion] = process.argv.slice(2);
 if (!newversion) {
   console.log("Invalid newversion");
-  process.exit();
+  process.exit(1);
 }
 
 execSync(`npm version ${newversion}`, { stdio: "inherit" });
